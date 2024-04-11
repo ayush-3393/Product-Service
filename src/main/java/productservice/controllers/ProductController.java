@@ -1,5 +1,7 @@
 package productservice.controllers;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import productservice.dtos.FakeStoreGetSingleProductResponseDto;
 import productservice.dtos.FakeStoreProductRequestDto;
@@ -17,11 +19,11 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public FakeStoreGetSingleProductResponseDto getSingleProduct(@PathVariable("productId") Long productId){
+    public ResponseEntity<FakeStoreGetSingleProductResponseDto> getSingleProduct(@PathVariable("productId") Long productId){
         Product product = this.productService.getSingleProduct(productId);
         FakeStoreGetSingleProductResponseDto responseDto = new FakeStoreGetSingleProductResponseDto();
         responseDto.setProduct(product);
-        return responseDto;
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @GetMapping("/")
