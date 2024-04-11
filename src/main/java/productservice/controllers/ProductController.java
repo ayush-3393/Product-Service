@@ -7,6 +7,7 @@ import productservice.dtos.FakeStoreGetSingleProductResponseDto;
 import productservice.dtos.FakeStoreProductRequestDto;
 import productservice.models.Product;
 import productservice.services.interfaces.ProductService;
+import productservice.utility.ConvertDtoToEntity;
 
 @RestController
 @RequestMapping("/products")
@@ -30,9 +31,12 @@ public class ProductController {
     public String getAllProducts(){
         return "All products";
     }
-    @PutMapping()
-    public String addNewProduct(@RequestBody FakeStoreProductRequestDto newProductDetails){
-        return "Added new product";
+    @PostMapping()
+    public ResponseEntity<FakeStoreGetSingleProductResponseDto> addNewProduct(@RequestBody FakeStoreProductRequestDto newProductDetails){
+        Product product = this.productService.addNewProduct(newProductDetails);
+        FakeStoreGetSingleProductResponseDto responseDto = new FakeStoreGetSingleProductResponseDto();
+        responseDto.setProduct(product);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
     @PatchMapping("/{productId}")
     public String updateProduct(@PathVariable("productId") Long productId,

@@ -8,6 +8,7 @@ import productservice.dtos.FakeStoreProductRequestDto;
 import productservice.models.Category;
 import productservice.models.Product;
 import productservice.services.interfaces.ProductService;
+import productservice.utility.ConvertDtoToEntity;
 
 import java.util.List;
 
@@ -30,16 +31,7 @@ public class FakeStoreProductServiceImplementation implements ProductService {
         );
         // convert product entity to product
         FakeStoreProductRequestDto productDto = productEntity.getBody();
-        Product product = new Product();
-        product.setId(productDto.getId());
-        product.setTitle(productDto.getTitle());
-        product.setPrice(productDto.getPrice());
-        product.setDescription(productDto.getDescription());
-        Category category = new Category();
-        category.setName(productDto.getCategory());
-        product.setCategory(category);
-        product.setImageUrl(productDto.getImage());
-        return product;
+        return ConvertDtoToEntity.ConvertFakeStoreProductDtoToProductEntity(productDto);
     }
 
     @Override
@@ -48,8 +40,15 @@ public class FakeStoreProductServiceImplementation implements ProductService {
     }
 
     @Override
-    public Product addNewProduct(Product product) {
-        return null;
+    public Product addNewProduct(FakeStoreProductRequestDto productRequestDto) {
+        RestTemplate restTemplate = this.restTemplateBuilder.build();
+        ResponseEntity<FakeStoreProductRequestDto> responseEntity = restTemplate.postForEntity(
+                "https://fakestoreapi.com/products",
+                productRequestDto,
+                FakeStoreProductRequestDto.class
+        );
+        FakeStoreProductRequestDto productDto = responseEntity.getBody();
+        return ConvertDtoToEntity.ConvertFakeStoreProductDtoToProductEntity(productDto);
     }
 
     @Override
