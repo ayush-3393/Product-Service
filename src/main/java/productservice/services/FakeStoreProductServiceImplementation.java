@@ -10,6 +10,7 @@ import productservice.models.Product;
 import productservice.services.interfaces.ProductService;
 import productservice.utility.ConvertDtoToEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,7 +37,17 @@ public class FakeStoreProductServiceImplementation implements ProductService {
 
     @Override
     public List<Product> getAllProducts() {
-        return null;
+        RestTemplate restTemplate = this.restTemplateBuilder.build();
+        ResponseEntity<FakeStoreProductRequestDto[]> responseEntity = restTemplate.getForEntity(
+                "https://fakestoreapi.com/products",
+                FakeStoreProductRequestDto[].class
+        );
+        List<Product> products = new ArrayList<>();
+        for(FakeStoreProductRequestDto productDto : responseEntity.getBody()){
+            Product product = ConvertDtoToEntity.ConvertFakeStoreProductDtoToProductEntity(productDto);
+            products.add(product);
+        }
+        return products;
     }
 
     @Override

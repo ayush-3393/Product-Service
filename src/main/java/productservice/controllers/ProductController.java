@@ -8,6 +8,10 @@ import productservice.dtos.FakeStoreProductRequestDto;
 import productservice.models.Product;
 import productservice.services.interfaces.ProductService;
 import productservice.utility.ConvertDtoToEntity;
+import productservice.utility.ConvertEntityToDto;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/products")
@@ -27,9 +31,16 @@ public class ProductController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    @GetMapping("/")
-    public String getAllProducts(){
-        return "All products";
+    @GetMapping()
+    public ResponseEntity<List<FakeStoreGetSingleProductResponseDto>> getAllProducts(){
+        List<Product> allProducts = this.productService.getAllProducts();
+        List<FakeStoreGetSingleProductResponseDto> responseDtos = new ArrayList<>();
+        for(Product product : allProducts){
+            FakeStoreGetSingleProductResponseDto dto = new FakeStoreGetSingleProductResponseDto();
+            dto.setProduct(product);
+            responseDtos.add(dto);
+        }
+        return new ResponseEntity<>(responseDtos, HttpStatus.OK);
     }
     @PostMapping()
     public ResponseEntity<FakeStoreGetSingleProductResponseDto> addNewProduct(@RequestBody FakeStoreProductRequestDto newProductDetails){
