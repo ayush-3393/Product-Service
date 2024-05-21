@@ -12,6 +12,9 @@ import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import productservice.dtos.FakeStoreProductRequestDto;
+import productservice.models.Product;
+import productservice.utility.ConvertDtoToEntity;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +37,7 @@ public class FakeStoreClient {
                 .build();
         RequestCallback requestCallback = restTemplate.httpEntityCallback(request, responseType);
         ResponseExtractor<ResponseEntity<T>> responseExtractor = restTemplate.responseEntityExtractor(responseType);
-        return restTemplate.execute(url, HttpMethod.POST, requestCallback, responseExtractor, uriVariables);
+        return restTemplate.execute(url, httpMethod, requestCallback, responseExtractor, uriVariables);
     }
 
     public FakeStoreProductDto getASingleProduct(Long productId){
@@ -54,6 +57,39 @@ public class FakeStoreClient {
                 FakeStoreProductDto[].class
         );
         return Arrays.asList(responseEntity.getBody());
+    }
+
+    public FakeStoreProductDto addNewProduct(FakeStoreProductDto productRequestDto) {
+        RestTemplate restTemplate = this.restTemplateBuilder.build();
+        ResponseEntity<FakeStoreProductDto> responseEntity = restTemplate.postForEntity(
+                "https://fakestoreapi.com/products",
+                productRequestDto,
+                FakeStoreProductDto.class
+        );
+        return responseEntity.getBody();
+    }
+
+    public FakeStoreProductDto updateProduct(Long productId, FakeStoreProductDto productRequestDto) {
+        ResponseEntity<FakeStoreProductDto> responseEntity =
+                requestForEntity(
+                        HttpMethod.PUT,
+                        "https://fakestoreapi.com/products/{id}",
+                        productRequestDto,
+                        FakeStoreProductDto.class,
+                        productId);
+        return responseEntity.getBody();
+    }
+
+    public FakeStoreProductDto deleteProduct(Long productId){
+        FakeStoreProductDto productDto = getASingleProduct(productId);
+        ResponseEntity<FakeStoreProductDto> responseEntity =
+                requestForEntity(
+                        HttpMethod.DELETE,
+                        "https://fakestoreapi.com/products/{id}",
+                        productDto,
+                        FakeStoreProductDto.class,
+                        productId);
+        return responseEntity.getBody();
     }
 
 }

@@ -4,11 +4,16 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import productservice.clients.FakeStoreClient;
+import productservice.clients.FakeStoreProductDto;
 import productservice.dtos.FakeStoreProductRequestDto;
 import productservice.models.Category;
 import productservice.models.Product;
+import productservice.models.Rating;
 import productservice.services.interfaces.ProductService;
 import productservice.utility.ConvertDtoToEntity;
+import productservice.utility.ConvertEntityToFakeStoreDto;
+import productservice.utility.ConvertFakeStoreDtoToEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,59 +21,47 @@ import java.util.List;
 @Service
 public class FakeStoreProductServiceImplementation implements ProductService {
 
-    private final RestTemplateBuilder restTemplateBuilder;
+    private final FakeStoreClient fakeStoreClient;
 
-    public FakeStoreProductServiceImplementation(RestTemplateBuilder restTemplateBuilder) {
-        this.restTemplateBuilder = restTemplateBuilder;
+    public FakeStoreProductServiceImplementation(FakeStoreClient fakeStoreClient) {
+        this.fakeStoreClient = fakeStoreClient;
     }
 
     @Override
     public Product getSingleProduct(Long productId) {
-        RestTemplate restTemplate = this.restTemplateBuilder.build();
-        ResponseEntity<FakeStoreProductRequestDto> productEntity = restTemplate.getForEntity(
-                "https://fakestoreapi.com/products/{id}",
-                FakeStoreProductRequestDto.class,
-                productId
-        );
-        // convert product entity to product
-        FakeStoreProductRequestDto productDto = productEntity.getBody();
-        return ConvertDtoToEntity.ConvertFakeStoreProductDtoToProductEntity(productDto);
+        FakeStoreProductDto productDto = this.fakeStoreClient.getASingleProduct(productId);
+        return ConvertFakeStoreDtoToEntity.convertFakeStoreProductDtoToProductEntity(productDto);
     }
 
     @Override
     public List<Product> getAllProducts() {
-        RestTemplate restTemplate = this.restTemplateBuilder.build();
-        ResponseEntity<FakeStoreProductRequestDto[]> responseEntity = restTemplate.getForEntity(
-                "https://fakestoreapi.com/products",
-                FakeStoreProductRequestDto[].class
-        );
+        List<FakeStoreProductDto> productDtos = this.fakeStoreClient.getAllProducts();
         List<Product> products = new ArrayList<>();
-        for(FakeStoreProductRequestDto productDto : responseEntity.getBody()){
-            Product product = ConvertDtoToEntity.ConvertFakeStoreProductDtoToProductEntity(productDto);
-            products.add(product);
+        for (FakeStoreProductDto productDto : productDtos) {
+            products.add(ConvertFakeStoreDtoToEntity.convertFakeStoreProductDtoToProductEntity(productDto));
         }
         return products;
     }
 
     @Override
-    public Product addNewProduct(FakeStoreProductRequestDto productRequestDto) {
-        RestTemplate restTemplate = this.restTemplateBuilder.build();
-        ResponseEntity<FakeStoreProductRequestDto> responseEntity = restTemplate.postForEntity(
-                "https://fakestoreapi.com/products",
-                productRequestDto,
-                FakeStoreProductRequestDto.class
-        );
-        FakeStoreProductRequestDto productDto = responseEntity.getBody();
-        return ConvertDtoToEntity.ConvertFakeStoreProductDtoToProductEntity(productDto);
+    public Product addNewProduct(Product product) {
+        FakeStoreProductDto fakeStoreProductDto =
+                ConvertEntityToFakeStoreDto.convertProductEntityToFakeStoreProductDto(product);
+        FakeStoreProductDto responseDto = this.fakeStoreClient.addNewProduct(fakeStoreProductDto);
+        return ConvertFakeStoreDtoToEntity.convertFakeStoreProductDtoToProductEntity(responseDto);
     }
 
     @Override
-    public Product updateProduct(Product product) {
-        return null;
+    public Product updateProduct(Long productId, Product product) {
+        FakeStoreProductDto fakeStoreProductDto =
+                ConvertEntityToFakeStoreDto.convertProductEntityToFakeStoreProductDto(product);
+        FakeStoreProductDto responseDto = this.fakeStoreClient.updateProduct(productId, fakeStoreProductDto);
+        return ConvertFakeStoreDtoToEntity.convertFakeStoreProductDtoToProductEntity(responseDto);
     }
 
     @Override
-    public Boolean deleteProduct(Long productId) {
-        return null;
+    public Product deleteProduct(Long productId) {
+        FakeStoreProductDto responseDto = this.fakeStoreClient.deleteProduct(productId);
+        return ConvertFakeStoreDtoToEntity.convertFakeStoreProductDtoToProductEntity(responseDto);
     }
 }

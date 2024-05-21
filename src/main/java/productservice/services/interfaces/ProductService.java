@@ -8,7 +8,7 @@ import java.util.List;
 public interface ProductService {
     Product getSingleProduct(Long productId);
     List<Product> getAllProducts();
-    Product addNewProduct(FakeStoreProductRequestDto productRequestDto);
-    Product updateProduct(Product product);
-    Boolean deleteProduct(Long productId);
+    Product addNewProduct(Product product);
+    Product updateProduct(Long productId, Product product);
+    Product deleteProduct(Long productId);
 }

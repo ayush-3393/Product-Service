@@ -13,5 +13,4 @@ public class FakeStoreProductRequestDto {
     private String description;
     private String image;
     private String category;
-    private Rating rating;
 }

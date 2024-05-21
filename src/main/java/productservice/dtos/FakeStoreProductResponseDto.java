@@ -5,6 +5,6 @@ import lombok.Setter;
 import productservice.models.Product;
 @Setter
 @Getter
-public class FakeStoreGetSingleProductResponseDto {
+public class FakeStoreProductResponseDto {
     private Product product;
 }
