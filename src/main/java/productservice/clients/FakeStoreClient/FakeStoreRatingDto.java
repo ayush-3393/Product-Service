@@ -1,4 +1,4 @@
-package productservice.clients;
+package productservice.clients.FakeStoreClient;
 
 import lombok.Getter;
 import lombok.Setter;

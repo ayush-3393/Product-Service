@@ -1,6 +1,6 @@
 package productservice.utility;
 
-import productservice.clients.FakeStoreProductDto;
+import productservice.clients.FakeStoreClient.FakeStoreProductDto;
 import productservice.models.Category;
 import productservice.models.Product;
 import productservice.models.Rating;

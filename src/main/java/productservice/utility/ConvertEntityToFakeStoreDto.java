@@ -1,7 +1,6 @@
 package productservice.utility;
 
-import productservice.clients.FakeStoreProductDto;
-import productservice.clients.FakeStoreRatingDto;
+import productservice.clients.FakeStoreClient.FakeStoreProductDto;
 import productservice.models.Product;
 
 public class ConvertEntityToFakeStoreDto {

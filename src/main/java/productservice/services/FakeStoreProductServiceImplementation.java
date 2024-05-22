@@ -1,17 +1,10 @@
 package productservice.services;
 
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import productservice.clients.FakeStoreClient;
-import productservice.clients.FakeStoreProductDto;
-import productservice.dtos.FakeStoreProductRequestDto;
-import productservice.models.Category;
+import productservice.clients.FakeStoreClient.FakeStoreClient;
+import productservice.clients.FakeStoreClient.FakeStoreProductDto;
 import productservice.models.Product;
-import productservice.models.Rating;
 import productservice.services.interfaces.ProductService;
-import productservice.utility.ConvertDtoToEntity;
 import productservice.utility.ConvertEntityToFakeStoreDto;
 import productservice.utility.ConvertFakeStoreDtoToEntity;
 

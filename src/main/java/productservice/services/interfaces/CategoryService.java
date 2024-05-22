@@ -1,7 +1,12 @@
 package productservice.services.interfaces;
 
+import productservice.models.Category;
+import productservice.models.Product;
+
+import java.util.List;
+
 public interface CategoryService {
-    String getAllCategories();
-    String getProductsInCategory(Long categoryId);
+    List<Category> getAllCategories();
+    List<Product> getProductsInCategory(Category category);
 
 }
