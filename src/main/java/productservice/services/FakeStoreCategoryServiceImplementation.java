@@ -25,6 +25,9 @@ public class FakeStoreCategoryServiceImplementation implements CategoryService {
     @Override
     public Optional<List<Category>> getAllCategories() {
         FakeStoreCategoryDto fakeStoreCategoryDto = this.fakeStoreClient.getAllCategories();
+        if (fakeStoreCategoryDto == null) {
+            return Optional.empty();
+        }
         List<Category> categories = new ArrayList<>();
         for(String category : fakeStoreCategoryDto.getCategory()) {
             Category newCategory = new Category();
@@ -37,6 +40,9 @@ public class FakeStoreCategoryServiceImplementation implements CategoryService {
     @Override
     public Optional<List<Product>> getProductsInCategory(Category category) {
         List<FakeStoreProductDto> productDtos = this.fakeStoreClient.getProductsInCategory(category);
+        if (productDtos == null) {
+            return Optional.empty();
+        }
         List<Product> products = new ArrayList<>();
         for (FakeStoreProductDto productDto : productDtos) {
             products.add(ConvertFakeStoreDtoToEntity.convertFakeStoreProductDtoToProductEntity(productDto));

@@ -24,12 +24,18 @@ public class FakeStoreProductServiceImplementation implements ProductService {
     @Override
     public Optional<Product> getSingleProduct(Long productId) {
         FakeStoreProductDto productDto = this.fakeStoreClient.getASingleProduct(productId);
+        if (productDto == null) {
+            return Optional.empty();
+        }
         return Optional.of(ConvertFakeStoreDtoToEntity.convertFakeStoreProductDtoToProductEntity(productDto));
     }
 
     @Override
     public Optional<List<Product>> getAllProducts() {
         List<FakeStoreProductDto> productDtos = this.fakeStoreClient.getAllProducts();
+        if (productDtos == null) {
+            return Optional.empty();
+        }
         List<Product> products = new ArrayList<>();
         for (FakeStoreProductDto productDto : productDtos) {
             products.add(ConvertFakeStoreDtoToEntity.convertFakeStoreProductDtoToProductEntity(productDto));
@@ -42,6 +48,9 @@ public class FakeStoreProductServiceImplementation implements ProductService {
         FakeStoreProductDto fakeStoreProductDto =
                 ConvertEntityToFakeStoreDto.convertProductEntityToFakeStoreProductDto(product);
         FakeStoreProductDto responseDto = this.fakeStoreClient.addNewProduct(fakeStoreProductDto);
+        if (responseDto == null) {
+            return Optional.empty();
+        }
         return Optional.of(ConvertFakeStoreDtoToEntity.convertFakeStoreProductDtoToProductEntity(responseDto));
     }
 
@@ -50,12 +59,18 @@ public class FakeStoreProductServiceImplementation implements ProductService {
         FakeStoreProductDto fakeStoreProductDto =
                 ConvertEntityToFakeStoreDto.convertProductEntityToFakeStoreProductDto(product);
         FakeStoreProductDto responseDto = this.fakeStoreClient.updateProduct(productId, fakeStoreProductDto);
+        if (responseDto == null) {
+            return Optional.empty();
+        }
         return Optional.of(ConvertFakeStoreDtoToEntity.convertFakeStoreProductDtoToProductEntity(responseDto));
     }
 
     @Override
     public Optional<Product> deleteProduct(Long productId) {
         FakeStoreProductDto responseDto = this.fakeStoreClient.deleteProduct(productId);
+        if (responseDto == null) {
+            return Optional.empty();
+        }
         return Optional.of(ConvertFakeStoreDtoToEntity.convertFakeStoreProductDtoToProductEntity(responseDto));
     }
 }
