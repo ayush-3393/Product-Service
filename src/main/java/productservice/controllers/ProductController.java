@@ -5,12 +5,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import productservice.dtos.FakeStoreProductResponseDto;
 import productservice.dtos.FakeStoreProductRequestDto;
+import productservice.exceptions.NotFoundException;
 import productservice.models.Category;
 import productservice.models.Product;
 import productservice.services.interfaces.ProductService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/products")
@@ -23,18 +25,24 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<FakeStoreProductResponseDto> getSingleProduct(@PathVariable("productId") Long productId){
-        Product product = this.productService.getSingleProduct(productId);
+    public ResponseEntity<FakeStoreProductResponseDto> getSingleProduct(@PathVariable("productId") Long productId) throws NotFoundException {
+        Optional<Product> product = this.productService.getSingleProduct(productId);
+        if (product.isEmpty()){
+            throw new NotFoundException("Product not found");
+        }
         FakeStoreProductResponseDto responseDto = new FakeStoreProductResponseDto();
-        responseDto.setProduct(product);
+        responseDto.setProduct(product.get());
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @GetMapping()
-    public ResponseEntity<List<FakeStoreProductResponseDto>> getAllProducts(){
-        List<Product> allProducts = this.productService.getAllProducts();
+    public ResponseEntity<List<FakeStoreProductResponseDto>> getAllProducts() throws NotFoundException {
+        Optional<List<Product>> allProducts = this.productService.getAllProducts();
+        if (allProducts.isEmpty()){
+            throw new NotFoundException("No products found");
+        }
         List<FakeStoreProductResponseDto> responseDtos = new ArrayList<>();
-        for(Product product : allProducts){
+        for(Product product : allProducts.get()){
             FakeStoreProductResponseDto dto = new FakeStoreProductResponseDto();
             dto.setProduct(product);
             responseDtos.add(dto);
@@ -44,7 +52,7 @@ public class ProductController {
     @PostMapping()
     public ResponseEntity<FakeStoreProductResponseDto> addNewProduct(
             @RequestBody FakeStoreProductRequestDto newProductDetails
-    ) {
+    ) throws NotFoundException {
 
         Product requestProduct = new Product();
         requestProduct.setId(newProductDetails.getId());
@@ -56,16 +64,20 @@ public class ProductController {
         category.setName(newProductDetails.getCategory());
         requestProduct.setCategory(category);
 
-        Product product = this.productService.addNewProduct(requestProduct);
+        Optional<Product> product = this.productService.addNewProduct(requestProduct);
+
+        if (product.isEmpty()){
+            throw new NotFoundException("Product not found");
+        }
 
         FakeStoreProductResponseDto responseDto = new FakeStoreProductResponseDto();
-        responseDto.setProduct(product);
+        responseDto.setProduct(product.get());
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @PutMapping("/{productId}")
     public ResponseEntity<FakeStoreProductResponseDto> updateProduct(@PathVariable("productId") Long productId,
-                                @RequestBody FakeStoreProductRequestDto updatedProductDetails){
+                                @RequestBody FakeStoreProductRequestDto updatedProductDetails) throws NotFoundException {
         Product requestProduct = new Product();
         requestProduct.setId(updatedProductDetails.getId());
         requestProduct.setTitle(updatedProductDetails.getTitle());
@@ -76,17 +88,23 @@ public class ProductController {
         category.setName(updatedProductDetails.getCategory());
         requestProduct.setCategory(category);
 
-        Product product = this.productService.updateProduct(productId, requestProduct);
+        Optional<Product> product = this.productService.updateProduct(productId, requestProduct);
+        if (product.isEmpty()){
+            throw new NotFoundException("Product not found");
+        }
         FakeStoreProductResponseDto responseDto = new FakeStoreProductResponseDto();
-        responseDto.setProduct(product);
+        responseDto.setProduct(product.get());
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{productId}")
-    public ResponseEntity<FakeStoreProductResponseDto> deleteProduct(@PathVariable("productId") Long productId){
-        Product product = this.productService.deleteProduct(productId);
+    public ResponseEntity<FakeStoreProductResponseDto> deleteProduct(@PathVariable("productId") Long productId) throws NotFoundException {
+        Optional<Product> product = this.productService.deleteProduct(productId);
+        if (product.isEmpty()){
+            throw new NotFoundException("Product not found");
+        }
         FakeStoreProductResponseDto responseDto = new FakeStoreProductResponseDto();
-        responseDto.setProduct(product);
+        responseDto.setProduct(product.get());
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 }

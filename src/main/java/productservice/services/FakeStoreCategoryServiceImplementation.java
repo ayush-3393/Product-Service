@@ -11,6 +11,7 @@ import productservice.utility.ConvertFakeStoreDtoToEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FakeStoreCategoryServiceImplementation implements CategoryService {
@@ -22,7 +23,7 @@ public class FakeStoreCategoryServiceImplementation implements CategoryService {
     }
 
     @Override
-    public List<Category> getAllCategories() {
+    public Optional<List<Category>> getAllCategories() {
         FakeStoreCategoryDto fakeStoreCategoryDto = this.fakeStoreClient.getAllCategories();
         List<Category> categories = new ArrayList<>();
         for(String category : fakeStoreCategoryDto.getCategory()) {
@@ -30,16 +31,16 @@ public class FakeStoreCategoryServiceImplementation implements CategoryService {
             newCategory.setName(category);
             categories.add(newCategory);
         }
-        return categories;
+        return Optional.of(categories);
     }
 
     @Override
-    public List<Product> getProductsInCategory(Category category) {
+    public Optional<List<Product>> getProductsInCategory(Category category) {
         List<FakeStoreProductDto> productDtos = this.fakeStoreClient.getProductsInCategory(category);
         List<Product> products = new ArrayList<>();
         for (FakeStoreProductDto productDto : productDtos) {
             products.add(ConvertFakeStoreDtoToEntity.convertFakeStoreProductDtoToProductEntity(productDto));
         }
-        return products;
+        return Optional.of(products);
     }
 }

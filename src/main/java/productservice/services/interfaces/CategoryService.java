@@ -4,9 +4,10 @@ import productservice.models.Category;
 import productservice.models.Product;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CategoryService {
-    List<Category> getAllCategories();
-    List<Product> getProductsInCategory(Category category);
+    Optional<List<Category>> getAllCategories();
+    Optional<List<Product>>getProductsInCategory(Category category);
 
 }
