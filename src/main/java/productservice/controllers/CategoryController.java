@@ -39,7 +39,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryName}")
-    public ResponseEntity<List<FakeStoreProductResponseDto>> getSingleCategory(@PathVariable("categoryName") String categoryName) throws NotFoundException {
+    public ResponseEntity<List<FakeStoreProductResponseDto>> getProductsInCategory(@PathVariable("categoryName") String categoryName) throws NotFoundException {
         Category category = new Category();
         category.setName(categoryName);
         Optional<List<Product>> productsInCategory = this.categoryService.getProductsInCategory(category);
