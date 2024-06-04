@@ -1,6 +1,7 @@
 package productservice.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Transient;
@@ -21,6 +22,7 @@ public class Product extends BaseModel{
     @JsonManagedReference
     private Category category;
     private String imageUrl;
-    @Transient
+//    @Transient
+    @Embedded
     private Rating rating;
 }
